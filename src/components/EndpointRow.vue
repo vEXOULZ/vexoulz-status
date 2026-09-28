@@ -1,23 +1,23 @@
 <script setup lang="ts">
-// One service on the front page: its state, uptime and average response over the chosen period, and its latest
-// checks as a bar. The name opens the service's own page.
+// One service on the front page: its state, uptime and average response over the chosen period, and its history
+// over that period as a bar. The name opens the service's own page.
 import { VxStatusDot, VxUptimeBar } from '@vexoulz/ui'
 import { computed } from 'vue'
 import type { EndpointStatus, Period } from '@/lib/gatus'
-import { HEALTH_WORD, clock, healthOf, millis, percent, ticksOf } from '@/lib/health'
+import { HEALTH_WORD, healthOf, historyOf, historyStart, millis, percent } from '@/lib/health'
 
 const props = defineProps<{
   endpoint: EndpointStatus
   period: Period
   uptime?: number | null
   responseTime?: number | null
-  /** Ticks in the bar, so bars in a list line up. */
-  slots: number
+  /** When the data was fetched: the bar ends there. */
+  now: number
 }>()
 
 const health = computed(() => healthOf(props.endpoint.results))
-const ticks = computed(() => ticksOf(props.endpoint.results))
-const first = computed(() => props.endpoint.results[0])
+const ticks = computed(() => historyOf(props.endpoint.results, props.endpoint.events, props.period, props.now))
+const start = computed(() => historyStart(props.period, props.now))
 </script>
 
 <template>
@@ -33,9 +33,9 @@ const first = computed(() => props.endpoint.results[0])
         <span :title="`Average response over the last ${period}`"><span class="vx-muted">avg</span> {{ millis(responseTime) }}</span>
       </span>
     </div>
-    <VxUptimeBar :ticks="ticks" :slots="slots" :label="`${endpoint.name}, last ${ticks.length} checks`" />
+    <VxUptimeBar :ticks="ticks" :label="`${endpoint.name}, last ${period}`" />
     <div class="ep-axis vx-mono small vx-muted" aria-hidden="true">
-      <span>{{ first ? clock(first.timestamp) : '' }}</span>
+      <span>{{ start }}</span>
       <span>now</span>
     </div>
   </div>

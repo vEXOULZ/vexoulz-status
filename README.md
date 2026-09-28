@@ -20,11 +20,19 @@ git config core.hooksPath .githooks   # once per clone: branch-name rules, see C
 
 | path | what |
 |---|---|
-| `/` | one line for everything, Gatus's announcements, then every service by group: its state, uptime and average response over 1h / 24h / 7d / 30d (`?period=`), and its last 50 checks. `?show=trouble` lists only the services that aren't plainly up |
+| `/` | one line for everything, Gatus's announcements, then every service by group: its state, and its uptime, average response and history over 1h / 24h / 7d / 30d (`?period=`). `?show=trouble` lists only the services that aren't plainly up |
 | `/endpoints/:key` | one service: uptime and average response for every period, its last 100 checks as a bar and a response-time chart (pick a check to see its conditions and errors), and its outages |
 | anything else | 404 |
 
 `/endpoints/:key` is the same path as Gatus's own endpoint pages, so links to those keep working.
+
+Gatus lists services by key, so the order is set here (`groupsOf` in `src/lib/health.ts`): groups `websites`,
+`API`, `infrastructure`, then any other group alphabetically; within a group, by where the checked host (the first
+result's `hostname`, not the display name) sits in `@vexoulz/ui`'s `SITES`, then by name, with other hosts last.
+
+The front page's bars show the chosen period in slots: 60 × 1 min, 48 × 30 min, 42 × 4 h or 30 × 1 day. A slot is
+down when one of Gatus's outages (its UNHEALTHY to HEALTHY events) overlaps it, unstable when a check in it failed
+without making an outage (checks are only known for the latest hour or so), and grey from before checking began.
 
 A service is **Down** when its latest check failed, **Unstable** when an earlier check in view failed, **Up**
 otherwise. The pages reload every minute while the tab is visible (Gatus checks once a minute); a failed reload
@@ -35,7 +43,8 @@ keeps the last answer and says it's stale.
 The site expects to share an origin with Gatus, which keeps serving `/api/*`. It reads:
 
 - `GET /api/v1/endpoints/statuses`: every endpoint with its latest results.
-- `GET /api/v1/endpoints/{key}/statuses`: one endpoint's results and events (the outages).
+- `GET /api/v1/endpoints/{key}/statuses`: one endpoint's results and events (the outages; the front page asks
+  for one result, just for the events).
 - `GET /api/v1/endpoints/{key}/uptimes/{1h,24h,7d,30d}` and `…/response-times/…`: the numbers.
 - `GET /api/v1/config`: announcements.
 
