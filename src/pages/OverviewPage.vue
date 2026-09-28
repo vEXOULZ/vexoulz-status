@@ -1,20 +1,25 @@
 <script setup lang="ts">
 // Everything at once: one line for the whole network, Gatus's announcements, then every service by group with its
-// latest checks. The period and the filter live in the URL (?period=7d&show=trouble), so a link shows the same view.
+// history over the chosen period. The period and the filter live in the URL (?period=7d&show=trouble), so a link shows the same view.
 import { VxButton, VxCallout, VxEmptyState, VxSegmented, VxSkeleton, VxStatusDot } from '@vexoulz/ui'
 import { computed, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import EndpointRow from '@/components/EndpointRow.vue'
 import StatusShell from '@/components/StatusShell.vue'
 import { PERIODS, gatus, type Period } from '@/lib/gatus'
-import { announcementTone, dateTime, groupsOf, healthOf, overallOf } from '@/lib/health'
+import { HISTORY, announcementTone, dateTime, groupsOf, healthOf, overallOf } from '@/lib/health'
 import { useLive, useNow } from '@/lib/useLive'
 
-const SLOTS = 50
 const route = useRoute()
 const router = useRouter()
 
-const live = useLive(() => gatus.statuses(SLOTS))
+// The latest hour of checks for every service, and each one's events (its outages, as far back as Gatus keeps them):
+// the bars are built from both. A service whose events don't load still shows its checks.
+const live = useLive(async () => {
+  const endpoints = await gatus.statuses(HISTORY['1h'].slots)
+  const events = await Promise.all(endpoints.map((e) => gatus.endpoint(e.key, 1).then((d) => d.events, () => undefined)))
+  return endpoints.map((e, i) => ({ ...e, events: events[i] }))
+})
 const config = useLive(() => gatus.config())
 const now = useNow()
 
@@ -120,7 +125,7 @@ const showOptions = [
           :period="period"
           :uptime="numbers.get(e.key)?.uptime"
           :response-time="numbers.get(e.key)?.responseTime"
-          :slots="SLOTS"
+          :now="live.updated.value ?? now"
         />
       </div>
     </section>
