@@ -2,9 +2,9 @@
 import { createAccount } from '@vexoulz/ui/account'
 
 /**
- * vexoulz-auth's URL. VITE_AUTH_BASE overrides it; empty turns sign-in off (the menu's "Sign in" is greyed out),
- * which is also the default until the service is live.
+ * vexoulz-auth's URL. VITE_AUTH_BASE overrides it (a copy hosted elsewhere points it at its own, or sets it empty:
+ * that turns sign-in off, and the menu's "Sign in" is greyed out).
  */
-export const AUTH_BASE = import.meta.env.VITE_AUTH_BASE ?? ''
+export const AUTH_BASE = import.meta.env.VITE_AUTH_BASE ?? 'https://auth.vexoulz.net'
 
 export const account = createAccount({ authBase: AUTH_BASE })
