@@ -7,6 +7,7 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import App from './App.vue'
+import { account } from './lib/account'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,4 +20,4 @@ const router = createRouter({
   scrollBehavior: (to, from, saved) => saved ?? (to.path !== from.path ? { top: 0 } : undefined),
 })
 
-createApp(App).use(router).use(VxBuild, { commit: __COMMIT__ }).mount('#app')
+createApp(App).use(router).use(VxBuild, { commit: __COMMIT__ }).use(account).mount('#app')
