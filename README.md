@@ -10,7 +10,7 @@ npm run dev         # http://localhost:5177 (proxies /api, see below)
 npm run typecheck   # vue-tsc
 npm test            # vitest
 npm run build       # → dist/
-git config core.hooksPath .githooks   # once per clone: branch-name rules, see CONTRIBUTING.md
+git config core.hooksPath .conventions/githooks   # once per clone: branch-name rules, see CONTRIBUTING.md
 ```
 
 `main` is merge-only and branches follow [Conventional Branch](https://conventional-branch.github.io/)
