@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       port: 5177,
       // In production the site and Gatus share an origin (`/api`). In dev, forward /api to the public status page
       // so the same relative URLs work. Override with VITE_DEV_GATUS_TARGET.
-      proxy: { '/api': { target: env.VITE_DEV_GATUS_TARGET || 'https://status.vexoulz.net', changeOrigin: true } },
+      proxy: { '/api': { target: env.VITE_DEV_GATUS_TARGET || 'https://status.vexoul.net', changeOrigin: true } },
     },
     test: { include: ['tests/**/*.test.ts'] },
   }
