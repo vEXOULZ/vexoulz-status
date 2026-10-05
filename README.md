@@ -1,6 +1,6 @@
-# status.vexoulz.net
+# status.vexoul.net
 
-Service health for the vexoulz.net sites: whether each service is up, its uptime and response times, and its
+Service health for the vexoul.net sites: whether each service is up, its uptime and response times, and its
 outages. Vue 3 + TypeScript on the shared [`@vexoulz/ui`](https://github.com/vEXOULZ/vexoulz-ui) design, over the
 API of a [Gatus](https://github.com/TwiN/gatus) instance, which keeps doing the checks. It replaces Gatus's own pages.
 
@@ -53,7 +53,7 @@ origin, there's no CORS. Gatus itself is unchanged; anything these pages would n
 Gatus setting (or a question), not something to work out in the browser.
 
 In `npm run dev`, Vite forwards `/api` to `VITE_DEV_GATUS_TARGET` (see `.env.example`), by default the public
-status.vexoulz.net, so the dev server shows real checks without running Gatus. To use a local Gatus, set it to that
+status.vexoul.net, so the dev server shows real checks without running Gatus. To use a local Gatus, set it to that
 Gatus's address in `.env.local`.
 
 ## Publishing
@@ -71,5 +71,5 @@ repo and must never be committed here. `.gitignore` blocks `.env*` (except `.env
 
 ## Assets
 
-No images of its own yet. `public/favicon.ico` is vexoulz.net's; the header mark is `@vexoulz/ui`'s placeholder
+No images of its own yet. `public/favicon.ico` is vexoul.net's; the header mark is `@vexoulz/ui`'s placeholder
 like the other sites'. Still needed: a status favicon and logo, if it should have its own.

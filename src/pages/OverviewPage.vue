@@ -73,7 +73,7 @@ const showOptions = [
   <StatusShell>
     <div class="page-head">
       <div>
-        <div class="vx-eyebrow">vexoulz.net status</div>
+        <div class="vx-eyebrow">vexoul.net status</div>
         <h1 class="vx-display" aria-live="polite">
           <template v-if="live.data.value"><VxStatusDot class="big-dot" :status="overall.health" />{{ overall.title }}</template>
           <template v-else-if="live.error.value">Status unknown</template>

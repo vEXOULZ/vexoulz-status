@@ -2,7 +2,7 @@
 
 # vexoulz-status
 
-status.vexoulz.net: service health, uptime, response times and outages, over the API of a Gatus
+status.vexoul.net: service health, uptime, response times and outages, over the API of a Gatus
 instance that keeps doing the checks. Published by `publish.yml` to the `deploy` branch.
 
 - Gatus stays unchanged: data comes from its API as it is. Anything missing is a Gatus setting or a

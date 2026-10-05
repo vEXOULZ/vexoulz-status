@@ -34,12 +34,12 @@ describe('groupsOf', () => {
   })
   it('orders a group by the host of its first check in SITES, then by name; other hosts last', () => {
     const g = groupsOf([
-      at('status', 'websites', 'status.vexoulz.net'),
-      at('b-other', 'websites', 'ntfy.vexoulz.net'),
-      at('dtp', 'websites', 'dtp.vexoulz.net'),
+      at('status', 'websites', 'status.vexoul.net'),
+      at('b-other', 'websites', 'ntfy.vexoul.net'),
+      at('dtp', 'websites', 'dtp.vexoul.net'),
       at('a-other', 'websites'),
-      at('root', 'websites', 'vexoulz.net'),
-      at('vods', 'websites', 'vods.vexoulz.net'),
+      at('root', 'websites', 'vexoul.net'),
+      at('vods', 'websites', 'vods.vexoul.net'),
     ])
     expect(g[0]!.endpoints.map((e) => e.key)).toEqual(['root', 'vods', 'dtp', 'status', 'a-other', 'b-other'])
   })
