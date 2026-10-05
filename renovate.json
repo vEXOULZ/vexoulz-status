@@ -3,6 +3,6 @@
   "extends": ["github>vEXOULZ/conventions//renovate/default"],
   "packageRules": [
     { "matchUpdateTypes": ["minor", "patch"], "matchDepTypes": ["devDependencies"], "groupName": "dev dependencies (non-major)" },
-    { "matchPackageNames": ["@vexoulz/ui"], "groupName": "vexoulz packages", "description": "Tagged git releases of the shared design." }
+    { "matchPackageNames": ["@vexoulz/ui", "vEXOULZ/vexoulz-ui"], "groupName": "vexoulz packages", "description": "Tagged git releases of the shared design." }
   ]
 }
