@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@vexoulz/ui": "github:vEXOULZ/vexoulz-ui#v0.17.0",
+    "@vexoulz/ui": "github:vEXOULZ/vexoulz-ui#v0.19.0",
     "vue": "^3.5.43",
     "vue-router": "^4.6.4"
   },
