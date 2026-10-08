@@ -40,8 +40,9 @@ describe('groupsOf', () => {
       at('a-other', 'websites'),
       at('root', 'websites', 'vexoul.net'),
       at('vods', 'websites', 'vods.vexoul.net'),
+      at('keekivods', 'websites', 'keekivods.vexoul.net'),
     ])
-    expect(g[0]!.endpoints.map((e) => e.key)).toEqual(['root', 'vods', 'dtp', 'status', 'a-other', 'b-other'])
+    expect(g[0]!.endpoints.map((e) => e.key)).toEqual(['root', 'vods', 'dtp', 'status', 'keekivods', 'a-other', 'b-other'])
   })
 })
 
