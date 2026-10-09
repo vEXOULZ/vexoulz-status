@@ -27,11 +27,8 @@ const live = useLive(async () => {
   return { endpoint, numbers: new Map<Period, { uptime: number | null; responseTime: number | null }>(numbers) }
 }, () => props.endpointKey)
 
-const notFound = ref(false)
-watch(live.error, () => {
-  // Gatus answers 404 for a key it doesn't know.
-  notFound.value = !live.data.value && /^404/.test(live.error.value ?? '')
-})
+// Gatus answers 404 for a key it doesn't know.
+const notFound = computed(() => !live.data.value && /^404/.test(live.error.value ?? ''))
 
 const ep = computed(() => live.data.value?.endpoint ?? null)
 const results = computed(() => ep.value?.results ?? [])
