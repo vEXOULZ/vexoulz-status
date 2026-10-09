@@ -146,6 +146,15 @@ export const HISTORY: Record<Period, { slots: number; size: number }> = {
   '30d': { slots: 30, size: 86_400_000 },
 }
 
+/** How long a service's uptime and average response over a period stay fresh: a minute's checks barely move a long
+ * period's numbers, so the longer the period, the less often they're fetched again. */
+export const NUMBERS_TTL: Record<Period, number> = {
+  '1h': 5 * 60_000,
+  '24h': 15 * 60_000,
+  '7d': 3_600_000,
+  '30d': 6 * 3_600_000,
+}
+
 const dayShort = (t: number) => new Date(t).toLocaleDateString([], { month: 'short', day: 'numeric' })
 /** A slot's time as a label: "14:05", "14:00–14:30", "Sep 27, 08:00–12:00", "Sep 27". */
 function slotLabel(start: number, size: number): string {
