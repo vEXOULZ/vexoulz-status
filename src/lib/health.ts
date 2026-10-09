@@ -68,7 +68,7 @@ export function groupsOf(endpoints: EndpointStatus[]): Group[] {
     .map(([name, list]) => ({ name, endpoints: list.sort((a, b) => siteRank(a) - siteRank(b) || byName(a.name, b.name)) }))
 }
 
-export const clock = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+export const clock = (at: string | number) => new Date(at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 export const dateTime = (iso: string) =>
   new Date(iso).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
@@ -147,18 +147,17 @@ export const HISTORY: Record<Period, { slots: number; size: number }> = {
 }
 
 const dayShort = (t: number) => new Date(t).toLocaleDateString([], { month: 'short', day: 'numeric' })
-const clockAt = (t: number) => new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 /** A slot's time as a label: "14:05", "14:00–14:30", "Sep 27, 08:00–12:00", "Sep 27". */
 function slotLabel(start: number, size: number): string {
-  if (size <= 60_000) return clockAt(start)
+  if (size <= 60_000) return clock(start)
   if (size >= 86_400_000) return dayShort(start)
-  const range = `${clockAt(start)}–${clockAt(start + size)}`
+  const range = `${clock(start)}–${clock(start + size)}`
   return size > 3_600_000 ? `${dayShort(start)}, ${range}` : range
 }
 /** Where the history bar for a period starts, for the axis under it. */
 export const historyStart = (period: Period, now: number) => {
   const first = slotStarts(period, now)[0]!
-  return HISTORY[period].size >= 3_600_000 ? dayShort(first) : clockAt(first)
+  return HISTORY[period].size >= 3_600_000 ? dayShort(first) : clock(first)
 }
 
 /** Slot starts, lined up on local midnight so they read as round times, the last one holding `now`. */
