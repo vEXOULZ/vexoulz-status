@@ -3,11 +3,11 @@ import '@vexoulz/ui/style.css'
 import './styles.css'
 
 import { VxBuild } from '@vexoulz/ui'
+import { createAccount } from '@vexoulz/ui/account'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import App from './App.vue'
-import { account } from './lib/account'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,4 +20,4 @@ const router = createRouter({
   scrollBehavior: (to, from, saved) => saved ?? (to.path !== from.path ? { top: 0 } : undefined),
 })
 
-createApp(App).use(router).use(VxBuild, { commit: __COMMIT__ }).use(account).mount('#app')
+createApp(App).use(router).use(VxBuild, { commit: __COMMIT__ }).use(createAccount()).mount('#app')

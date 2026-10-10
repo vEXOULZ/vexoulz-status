@@ -2,13 +2,14 @@
 // Everything at once: one line for the whole network, Gatus's announcements, then every service by group with its
 // history over the chosen period. The period and the filter live in the URL (?period=7d&show=trouble), so a link shows the same view.
 import { VxButton, VxCallout, VxEmptyState, VxSegmented, VxSkeleton, VxStatusDot } from '@vexoulz/ui'
+import { useNow } from '@vexoulz/ui/utils'
 import { computed, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import EndpointRow from '@/components/EndpointRow.vue'
 import StatusShell from '@/components/StatusShell.vue'
 import { PERIODS, gatus, type Period } from '@/lib/gatus'
 import { HISTORY, NUMBERS_TTL, announcementTone, dateTime, groupsOf, healthOf, overallOf } from '@/lib/health'
-import { useLive, useNow } from '@/lib/useLive'
+import { useLive } from '@/lib/useLive'
 
 const route = useRoute()
 const router = useRouter()
@@ -21,7 +22,7 @@ const live = useLive(async () => {
   return endpoints.map((e, i) => ({ ...e, events: events[i] }))
 })
 const config = useLive(() => gatus.config())
-const now = useNow()
+const now = useNow(5000)
 
 const period = computed<Period>({
   get: () => (PERIODS as readonly string[]).includes(String(route.query.period)) ? (route.query.period as Period) : '24h',
