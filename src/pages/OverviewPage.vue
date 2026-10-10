@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router'
 import EndpointRow from '@/components/EndpointRow.vue'
 import StatusShell from '@/components/StatusShell.vue'
 import { PERIODS, gatus, type Period } from '@/lib/gatus'
-import { HISTORY, announcementTone, dateTime, groupsOf, healthOf, overallOf } from '@/lib/health'
+import { HISTORY, NUMBERS_TTL, announcementTone, dateTime, groupsOf, healthOf, overallOf } from '@/lib/health'
 import { useLive, useNow } from '@/lib/useLive'
 
 const route = useRoute()
@@ -39,23 +39,45 @@ const visible = computed(() => (show.value === 'all' ? endpoints.value : endpoin
 const groups = computed(() => groupsOf(visible.value))
 const announcements = computed(() => config.data.value?.announcements ?? [])
 
-// Uptime and average response per service for the chosen period: fetched per service, again with every refresh.
-const numbers = reactive(new Map<string, { uptime: number | null; responseTime: number | null }>())
-watch(
-  [() => endpoints.value.map((e) => e.key).join(), period, live.updated],
-  async ([, p]) => {
-    await Promise.all(
-      endpoints.value.map(async (e) => {
+// Uptime and average response per service and period, fetched per service. A poll fetches only the ones older than
+// the period's NUMBERS_TTL (or that failed), a period seen before shows its numbers until they're due again, and
+// Refresh fetches them all.
+interface Numbers {
+  uptime: number | null
+  responseTime: number | null
+  /** When they were fetched (ms); 0 when either failed, so the next poll tries again. */
+  at: number
+}
+const numbers = reactive(new Map<string, Numbers>())
+const pending = new Set<string>()
+const numbersKey = (k: string, p: Period) => `${p} ${k}`
+const numbersOf = (k: string) => numbers.get(numbersKey(k, period.value))
+
+async function loadNumbers(force = false) {
+  const p = period.value
+  await Promise.all(
+    endpoints.value.map(async (e) => {
+      const id = numbersKey(e.key, p)
+      const had = numbers.get(id)
+      if (pending.has(id) || (!force && had && Date.now() - had.at < NUMBERS_TTL[p])) return
+      pending.add(id)
+      try {
         const [uptime, responseTime] = await Promise.all([
           gatus.uptime(e.key, p).catch(() => null),
           gatus.responseTime(e.key, p).catch(() => null),
         ])
-        if (p === period.value) numbers.set(e.key, { uptime, responseTime })
-      }),
-    )
-  },
-)
-watch(period, () => numbers.clear())
+        numbers.set(id, { uptime, responseTime, at: uptime === null || responseTime === null ? 0 : Date.now() })
+      } finally {
+        pending.delete(id)
+      }
+    }),
+  )
+}
+watch([() => endpoints.value.map((e) => e.key).join(), period, live.updated], () => void loadNumbers())
+function refresh() {
+  void live.reload()
+  void loadNumbers(true)
+}
 
 const ago = computed(() => {
   if (!live.updated.value) return ''
@@ -83,7 +105,7 @@ const showOptions = [
           Every service is checked once a minute.<template v-if="ago"> Updated {{ ago }}.</template>
         </p>
       </div>
-      <VxButton size="sm" :disabled="live.loading.value" @click="live.reload()">Refresh</VxButton>
+      <VxButton size="sm" :disabled="live.loading.value" @click="refresh()">Refresh</VxButton>
     </div>
 
     <div v-if="announcements.length" class="stack announcements">
@@ -123,8 +145,8 @@ const showOptions = [
           :key="e.key"
           :endpoint="e"
           :period="period"
-          :uptime="numbers.get(e.key)?.uptime"
-          :response-time="numbers.get(e.key)?.responseTime"
+          :uptime="numbersOf(e.key)?.uptime"
+          :response-time="numbersOf(e.key)?.responseTime"
           :now="live.updated.value ?? now"
         />
       </div>
