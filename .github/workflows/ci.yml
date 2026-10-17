@@ -13,5 +13,5 @@ jobs:
   ci:
     uses: vexouLuna/conventions/.github/workflows/node-ci.yml@v2.1.0
     with:
-      # The vexoulz libraries are git dependencies, built by their `prepare` script on install.
+      # The vex libraries are git dependencies, built by their `prepare` script on install.
       ignore-scripts: false
