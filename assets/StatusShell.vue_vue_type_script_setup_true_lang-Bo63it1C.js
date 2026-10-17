@@ -1,0 +1,1 @@
+import{d as o,k as n,u as e,w as t,I as r,b as c,X as l,Z as u,o as _}from"./index-BaolBGoM.js";const i=o({__name:"StatusShell",setup(p){const a=[{label:"Services",to:"/"}];return(s,d)=>(_(),n(e(u),{site:"status",nav:a},{account:t(()=>[c(e(l))]),default:t(()=>[r(s.$slots,"default")]),_:3}))}});export{i as _};
